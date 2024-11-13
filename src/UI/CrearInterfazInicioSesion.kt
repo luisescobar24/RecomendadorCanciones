@@ -1,4 +1,3 @@
-// En tu archivo donde está crearInterfazInicioSesion
 package ui
 
 import modelo.Usuario
@@ -7,7 +6,7 @@ import modelo.guardarUsuario
 import javax.swing.*
 import java.awt.*
 
-private val usuariosRegistrados = cargarUsuarios() // Cargar usuarios persistidos
+private val usuariosRegistrados = cargarUsuarios()
 
 fun crearInterfazInicioSesion() {
     val frame = JFrame("Inicio de Sesión")

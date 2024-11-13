@@ -8,7 +8,6 @@ import javax.swing.*
 import javax.swing.table.DefaultTableModel
 import java.awt.*
 
-// Función principal para crear la interfaz de usuario
 fun crearInterfazUsuario(idUsuario: String) {
     // Frame principal
     val frame = JFrame("Sistema de Recomendación de Canciones - Bienvenido, $idUsuario")
@@ -16,7 +15,6 @@ fun crearInterfazUsuario(idUsuario: String) {
     frame.size = Dimension(800, 600)
     frame.layout = BorderLayout()
 
-    // Panel para criterios de búsqueda
     val panelBusqueda = JPanel()
     panelBusqueda.layout = GridBagLayout()
     panelBusqueda.border = BorderFactory.createTitledBorder("Criterios de Búsqueda")
@@ -25,7 +23,6 @@ fun crearInterfazUsuario(idUsuario: String) {
         insets = Insets(5, 5, 5, 5)
     }
 
-    // Campos y etiquetas para criterios
     val labels = arrayOf(
         "Danceability Mínimo:",
         "Danceability Máximo:",
@@ -46,19 +43,18 @@ fun crearInterfazUsuario(idUsuario: String) {
 
     val generoComboBox = fields[4] as JComboBox<String>
 
-    // Botón para cargar archivo CSV
     val cargarButton = JButton("Cargar Archivo CSV")
     val canciones = mutableListOf<Cancion>()
     val tableModel = DefaultTableModel(arrayOf("Nombre", "Género", "Duración (segundos)", "Danceability", "Energy", "Acousticness"), 0)
     val resultadosTable = JTable(tableModel).apply {
-        autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS // Ajustar columnas automáticamente
+        autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
         rowHeight = 25 // Altura de las filas
-        selectionBackground = Color(220, 220, 220) // Color de fondo al seleccionar
-        selectionForeground = Color.BLACK // Color del texto al seleccionar
+        selectionBackground = Color(220, 220, 220)
+        selectionForeground = Color.BLACK
     }
-    resultadosTable.tableHeader.background = Color(100, 100, 250) // Color de fondo del encabezado
-    resultadosTable.tableHeader.foreground = Color.WHITE // Color del texto del encabezado
-    resultadosTable.tableHeader.font = Font("Arial", Font.BOLD, 14) // Fuente del encabezado
+    resultadosTable.tableHeader.background = Color(100, 100, 250)
+    resultadosTable.tableHeader.foreground = Color.WHITE
+    resultadosTable.tableHeader.font = Font("Arial", Font.BOLD, 14)
     val scrollPane = JScrollPane(resultadosTable)
 
     cargarButton.addActionListener {
@@ -71,14 +67,14 @@ fun crearInterfazUsuario(idUsuario: String) {
                 canciones.addAll(cancionesCargadas)
                 JOptionPane.showMessageDialog(frame, "Archivo cargado exitosamente.")
 
-                // Limpiar y actualizar el ComboBox con géneros únicos
+
                 generoComboBox.removeAllItems()
-                generoComboBox.addItem("")  // Opción vacía
+                generoComboBox.addItem("")
                 generosUnicos.forEach {
                     generoComboBox.addItem(it)
                 }
 
-                // Mostrar todas las canciones en la tabla
+
                 actualizarTabla(canciones, tableModel)
             } catch (e: Exception) {
                 JOptionPane.showMessageDialog(frame, "Error al cargar el archivo: ${e.message}", "Error", JOptionPane.ERROR_MESSAGE)
@@ -86,16 +82,13 @@ fun crearInterfazUsuario(idUsuario: String) {
         }
     }
 
-    // Agregar el botón de cargar al panel de búsqueda
     gbc.gridx = 0
     gbc.gridy = labels.size
     gbc.gridwidth = 2
     panelBusqueda.add(cargarButton, gbc)
 
-    // Panel de botones
     val panelBotones = JPanel()
 
-    // Botón para filtrar canciones
     val filtrarButton = JButton("Filtrar Canciones")
     filtrarButton.addActionListener {
         try {
@@ -109,7 +102,7 @@ fun crearInterfazUsuario(idUsuario: String) {
             if (duracionMin > duracionMax) throw IllegalArgumentException("Duración Mínima no puede ser mayor que Duración Máxima.")
 
             val cancionesFiltradas = filtrarCanciones(canciones, danceabilityMin, danceabilityMax, genero, duracionMin, duracionMax)
-            tableModel.setRowCount(0) // Limpiar la tabla
+            tableModel.setRowCount(0)
 
             cancionesFiltradas.forEach { cancion ->
                 val row = arrayOf(cancion.songName, cancion.genero, cancion.duracion / 1000, cancion.danceability, cancion.energy, cancion.acousticness)
@@ -121,7 +114,6 @@ fun crearInterfazUsuario(idUsuario: String) {
     }
     panelBotones.add(filtrarButton)
 
-    // Botón para recomendar canciones cercanas
     val recomendarButton = JButton("Recomendar Canciones Cercanas")
     recomendarButton.addActionListener {
         try {
@@ -134,7 +126,7 @@ fun crearInterfazUsuario(idUsuario: String) {
             if (duracionMin > duracionMax) throw IllegalArgumentException("Duración Mínima no puede ser mayor que Duración Máxima.")
 
             val cancionesRecomendadas = recomendarCancionesCercanas(canciones, danceabilityMin, danceabilityMax, duracionMin, duracionMax)
-            tableModel.setRowCount(0) // Limpiar la tabla
+            tableModel.setRowCount(0)
 
             cancionesRecomendadas.forEach { cancion ->
                 val row = arrayOf(cancion.songName, cancion.genero, cancion.duracion / 1000, cancion.danceability, cancion.energy, cancion.acousticness)
@@ -146,18 +138,15 @@ fun crearInterfazUsuario(idUsuario: String) {
     }
     panelBotones.add(recomendarButton)
 
-    // Agregar paneles al JFrame
     frame.add(panelBusqueda, BorderLayout.NORTH)
     frame.add(scrollPane, BorderLayout.CENTER)
     frame.add(panelBotones, BorderLayout.SOUTH)
 
-    // Mostrar la ventana
     frame.isVisible = true
 }
 
-// Definición de la función actualizarTabla
 fun actualizarTabla(canciones: List<Cancion>, tableModel: DefaultTableModel) {
-    tableModel.setRowCount(0) // Limpiar la tabla
+    tableModel.setRowCount(0) 
     canciones.forEach { cancion ->
         val row = arrayOf(
             cancion.songName,
